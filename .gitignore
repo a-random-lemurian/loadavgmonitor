@@ -1,0 +1,8 @@
+*.out
+*.o
+build*
+.vscode
+*.sqlite
+
+# testing code
+test.c
