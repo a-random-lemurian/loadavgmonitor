@@ -5,7 +5,7 @@
 
 #include "utils.h"
 
-#define LOADAVGMONITORD_DBFILE "/var/lib/loadavgmonitord/main.sqlite"
+#define LOADAVGMONITOR_DBFILE "/var/lib/loadavgmonitord/main.sqlite"
 
 int prepare_new_db_file(char *path)
 {
@@ -39,10 +39,10 @@ int check_db_file(char* file)
 int main(int argc, char **argv)
 {
   for (;;) {
-    if (check_db_file(LOADAVGMONITORD_DBFILE) == 0) {
+    if (check_db_file(LOADAVGMONITOR_DBFILE) == 0) {
       sqlite3 *db;
       sqlite3_stmt *stmt;
-      sqlite3_open(LOADAVGMONITORD_DBFILE, &db);
+      sqlite3_open(LOADAVGMONITOR_DBFILE, &db);
       sqlite3_prepare(db,
                       "INSERT INTO loadavg (measured_at, "
                       "avg1m, avg5m, avg15m)"
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
       sqlite3_close(db);
     }
     else {
-      prepare_new_db_file(LOADAVGMONITORD_DBFILE);
+      prepare_new_db_file(LOADAVGMONITOR_DBFILE);
     }
     msleep(5000);
   }
