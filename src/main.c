@@ -25,13 +25,13 @@ int prepare_new_db_file(char *path)
  * Check for this file:
  * /var/lib/loadavgmonitord/main.sqlite
  */
-int check_db_file()
+int check_db_file(char* file)
 {
-  if (access(LOADAVGMONITORD_DBFILE, F_OK) == 0) {
+  if (access(file, F_OK) == 0) {
     return 0;
   }
   else {
-    prepare_new_db_file(LOADAVGMONITORD_DBFILE);
+    prepare_new_db_file(file);
     return 1;
   }
 }
@@ -39,7 +39,7 @@ int check_db_file()
 int main(int argc, char **argv)
 {
   for (;;) {
-    if (check_db_file() == 0) {
+    if (check_db_file(LOADAVGMONITORD_DBFILE) == 0) {
       sqlite3 *db;
       sqlite3_stmt *stmt;
       sqlite3_open(LOADAVGMONITORD_DBFILE, &db);
