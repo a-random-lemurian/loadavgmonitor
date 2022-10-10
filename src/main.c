@@ -78,6 +78,7 @@ void monitor(char* file, int delay_ms)
   sqlite3 *db;
   sqlite3_stmt *stmt;
   sqlite3_open(file, &db);
+  prepare_new_db_file_from_dbconn(db);
 
   for (;;) {
     monitor_loadavg(db);
