@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/sysinfo.h>
 
 #include "utils.h"
 #include "argparse.h"
@@ -82,10 +83,29 @@ void monitor(char* file, int delay_ms)
 
   for (;;) {
     monitor_loadavg(db);
+    monitor_memory(db);
     msleep(delay_ms);
   }
+}
 
-  msleep(delay_ms);
+void monitor_memory(sqlite3 *db)
+{
+  sqlite3_stmt *stmt;
+  int rc = sqlite3_prepare(db,
+                  "INSERT INTO memory (measured_at, "
+                  "free, shared, used, buffer)"
+                  "VALUES (datetime('now'), ?, ?, ?, ?)",
+                  -1, &stmt, NULL);
+
+  struct sysinfo info;
+  sysinfo(&info);
+
+  sqlite3_bind_int64(stmt, 1, info.freeram);
+  sqlite3_bind_int64(stmt, 2, info.sharedram);
+  sqlite3_bind_int64(stmt, 3, (info.freeram - info.totalram));
+  sqlite3_bind_int64(stmt, 4, info.bufferram);
+  sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
 }
 
 void monitor_loadavg(sqlite3 *db)
