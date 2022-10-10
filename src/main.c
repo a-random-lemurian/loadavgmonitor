@@ -39,38 +39,35 @@ int check_db_file(char* file)
 
 void monitor(char* file, int delay_ms)
 {
+  sqlite3 *db;
+  sqlite3_stmt *stmt;
+  sqlite3_open(file, &db);
+
   for (;;) {
-    monitor_loadavg(file, delay_ms);
-  }
-}
-
-void monitor_loadavg(char* file, int delay_ms)
-{
-  if (check_db_file(file) == 0) {
-    sqlite3 *db;
-    sqlite3_stmt *stmt;
-    sqlite3_open(file, &db);
-    sqlite3_prepare(db,
-                    "INSERT INTO loadavg (measured_at, "
-                    "avg1m, avg5m, avg15m)"
-                    "VALUES (datetime('now'), ?, ?, ?)",
-                    -1, &stmt, NULL);
-
-    double loadavg[3];
-    int rc = getloadavg(loadavg, 3);
-
-    sqlite3_bind_double(stmt, 1, loadavg[0]);
-    sqlite3_bind_double(stmt, 2, loadavg[1]);
-    sqlite3_bind_double(stmt, 3, loadavg[2]);
-    sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-  }
-  else {
-    prepare_new_db_file(file);
+    monitor_loadavg(db);
   }
 
   msleep(delay_ms);
+}
+
+void monitor_loadavg(sqlite3 *db)
+{
+  sqlite3_stmt *stmt;
+  sqlite3_prepare(db,
+                  "INSERT INTO loadavg (measured_at, "
+                  "avg1m, avg5m, avg15m)"
+                  "VALUES (datetime('now'), ?, ?, ?)",
+                  -1, &stmt, NULL);
+
+  double loadavg[3];
+  int rc = getloadavg(loadavg, 3);
+
+  sqlite3_bind_double(stmt, 1, loadavg[0]);
+  sqlite3_bind_double(stmt, 2, loadavg[1]);
+  sqlite3_bind_double(stmt, 3, loadavg[2]);
+  sqlite3_step(stmt);
+  sqlite3_finalize(stmt);
+  sqlite3_close(db);
 }
 
 int main(int argc, char **argv)
