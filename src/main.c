@@ -39,6 +39,12 @@ void prepare_new_db_file_from_dbconn(sqlite3 *db)
                "measured_at DATETIME, avg1m INTEGER, avg5m INTEGER, "
                "avg15m INTEGER);",
                NULL, NULL, NULL);
+  sqlite3_exec(db,
+               "CREATE TABLE memory (id INTEGER PRIMARY KEY, "
+               "measured_at DATETIME, free INTEGER,"
+               "available INTEGER, used INTEGER",
+               NULL, NULL, NULL);
+}
 
 void prepare_new_db_file(char *path)
 {
