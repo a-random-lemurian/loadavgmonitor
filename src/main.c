@@ -78,6 +78,7 @@ void monitor(char* file, int delay_ms)
 
   for (;;) {
     monitor_loadavg(db);
+    msleep(delay_ms);
   }
 
   msleep(delay_ms);
