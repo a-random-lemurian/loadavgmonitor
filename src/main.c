@@ -101,7 +101,6 @@ void monitor_loadavg(sqlite3 *db)
   sqlite3_bind_double(stmt, 3, loadavg[2]);
   sqlite3_step(stmt);
   sqlite3_finalize(stmt);
-  sqlite3_close(db);
 }
 
 int main(int argc, char **argv)
