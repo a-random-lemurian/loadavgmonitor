@@ -32,16 +32,19 @@ int table_exists_in_sqlite_file(char *table, char *file, sqlite3 *db)
   return table_exists;
 }
 
-int prepare_new_db_file(char *path)
+void prepare_new_db_file_from_dbconn(sqlite3 *db)
 {
-  sqlite3 *db;
-  sqlite3_open(path, &db);
-
   sqlite3_exec(db,
                "CREATE TABLE loadavg (id INTEGER PRIMARY KEY, "
                "measured_at DATETIME, avg1m INTEGER, avg5m INTEGER, "
                "avg15m INTEGER);",
                NULL, NULL, NULL);
+
+void prepare_new_db_file(char *path)
+{
+  sqlite3 *db;
+  sqlite3_open(path, &db);
+  prepare_new_db_file_from_dbconn(db);
 }
 
 /*
