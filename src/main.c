@@ -35,14 +35,17 @@ int table_exists_in_sqlite_file(char *table, sqlite3 *db)
 void prepare_new_db_file_from_dbconn(sqlite3 *db)
 {
   sqlite3_exec(db,
-               "CREATE TABLE loadavg (id INTEGER PRIMARY KEY, "
+               "CREATE TABLE IF NOT EXISTS "
+               "loadavg (id INTEGER PRIMARY KEY, "
                "measured_at DATETIME, avg1m INTEGER, avg5m INTEGER, "
                "avg15m INTEGER);",
                NULL, NULL, NULL);
+
   sqlite3_exec(db,
-               "CREATE TABLE memory (id INTEGER PRIMARY KEY, "
+               "CREATE TABLE IF NOT EXISTS "
+               "memory (id INTEGER PRIMARY KEY, "
                "measured_at DATETIME, free INTEGER,"
-               "shared INTEGER, used INTEGER, buffer INTEGER",
+               "shared INTEGER, used INTEGER, buffer INTEGER);",
                NULL, NULL, NULL);
 }
 
