@@ -42,7 +42,7 @@ void prepare_new_db_file_from_dbconn(sqlite3 *db)
   sqlite3_exec(db,
                "CREATE TABLE memory (id INTEGER PRIMARY KEY, "
                "measured_at DATETIME, free INTEGER,"
-               "available INTEGER, used INTEGER",
+               "shared INTEGER, used INTEGER, buffer INTEGER",
                NULL, NULL, NULL);
 }
 
