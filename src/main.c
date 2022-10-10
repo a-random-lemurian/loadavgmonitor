@@ -40,7 +40,7 @@ int check_db_file(char* file)
 void monitor(char* file, int delay_ms)
 {
   for (;;) {
-    monitor_loadavg(file, delay_ms)
+    monitor_loadavg(file, delay_ms);
   }
 }
 
