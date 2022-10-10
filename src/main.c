@@ -8,6 +8,30 @@
 
 #define LOADAVGMONITOR_DBFILE "/var/lib/loadavgmonitord/main.sqlite"
 
+int table_exists_in_sqlite_file(char *table, char *file, sqlite3 *db)
+{
+  sqlite3_stmt *stmt;
+
+  const char *sql = "SELECT 1 FROM sqlite_master"
+                    "WHERE type='table' AND name=?";
+
+  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+  sqlite3_bind_text(stmt, 1, table, -1, SQLITE_TRANSIENT);
+  rc = sqlite3_step(stmt);
+
+  int table_exists;
+  if (rc == SQLITE_ROW) {
+      table_exists = 1;
+  }
+  else if (rc == SQLITE_DONE) {
+      table_exists = 0;
+  }
+
+  sqlite3_finalize(stmt);
+
+  return table_exists;
+}
+
 int prepare_new_db_file(char *path)
 {
   sqlite3 *db;
