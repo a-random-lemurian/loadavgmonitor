@@ -8,7 +8,7 @@
 
 #define LOADAVGMONITOR_DBFILE "/var/lib/loadavgmonitord/main.sqlite"
 
-int table_exists_in_sqlite_file(char *table, char *file, sqlite3 *db)
+int table_exists_in_sqlite_file(char *table, sqlite3 *db)
 {
   sqlite3_stmt *stmt;
 
